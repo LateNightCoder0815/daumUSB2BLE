@@ -23,6 +23,7 @@ server:
 
 port:
     baudrate: 9600
+    baudrate_old: 4800
     dataBits: 8
     parity: 'none'
     stopBits: 1
@@ -93,7 +94,8 @@ gpio:
     shiftDownPin: 17
 
 daumCockpit:
-    serialPath: '/dev/ttyDaumUsbSerial'
+    serialPath: '/dev/ttyUSB0'
+    old_protocol: true
     adress: '00'
     gotAdressSuccess: false
 

@@ -2,6 +2,7 @@
 * forked from https://github.com/uhulahen/daumUSB2BLE
 * updated and fixed to work with the current version of Zwift on modern linux
 * extended with broadcasting of ride metrics via ANT+
+* added support for devices before 2001 (e.g. Ergobike Cardio, 4008 series, etc.)
 
 ## prerequisites
 * RS232 to USB converter
@@ -29,6 +30,7 @@ SUBSYSTEM=="tty", ATTRS{idVendor}=="067b", ATTRS{idProduct}=="23a3", SYMLINK+="t
 ```
 SUBSYSTEM=="usb", ATTR{idVendor}=="0fcf", ATTR{idProduct}=="1009", MODE="0660", GROUP="uucp"
 ```
+* if you are using an old Daum device from before 2001 (e.g. Ergobike Cardio, 4008 series, etc.) set the parameter old_protocol to true in the config.yml
 
 ### configure sim
 * if SIM mode is a feature you want to use, edit the parameters in config.yml to fit you
@@ -101,9 +103,9 @@ sudo systemctl status ergoFACE.service
 ```
 
 * plug the RS232 to USB converter in any USB port
-* start your Daum ergobike 8008 TRS
+* start your Daum ergobike
 * ergoFACE will lookup for the cockpit address and start receiving data
-* start an app like ZWIFT and your Daum bike will appear as "DAUM Ergobike 8008 TRS" device with two services (power & FTMS)
+* start an app like ZWIFT and your Daum bike will appear as "DAUM Ergobike" device with two services (power & FTMS)
 
 ## website / server
 * start your browser and enter "pi-address:3000" (try to get fixed IP address for you raspberry on your router before)

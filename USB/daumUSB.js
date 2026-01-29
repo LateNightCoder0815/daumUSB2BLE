@@ -53,18 +53,23 @@ class daumUSB {
     logger.info('openPort - Ergobike found on port ' + path);
     this.emitter.emit('key', '[daumUSB.js] - Ergobike found on port ' + path);
 
+    let baudrate_selected = config.port.baudrate;
+    if (config.daumCockpit.old_protocol) {
+        baudrate_selected = config.port.baudrate_old;
+    }
+
     if (config.mock.daumUSB) {
       const {MockBinding} = require('@serialport/binding-mock');
       const {SerialPortStream} = require('@serialport/stream')
 
       // Create a port and enable the echo and recording.
       MockBinding.createPort(path, {echo: true, record: true});
-      this.port = new SerialPortStream({binding: MockBinding, path, baudRate: config.port.baudrate, autoOpen: false})
+      this.port = new SerialPortStream({binding: MockBinding, path, baudRate: baudrate_selected, autoOpen: false})
     } else {
       this.port = new SerialPort({
         path,
         autoOpen: false,
-        baudRate: config.port.baudrate,
+        baudRate: baudrate_selected,
         dataBits: config.port.dataBits,
         parity: config.port.parity,
         stopBits: config.port.stopBits,
@@ -304,8 +309,12 @@ class daumUSB {
             // const gearRatio = config.gears.ratioLow + (data.gear - 1) * config.gears.ratioHigh
             const gearRatio = config.gearbox['g' + data.gear];                      // 1,75 + ( gl_Gang -1 )* 0.098767
             const distance = gearRatio * config.gears.circumference;                // distance in cm per rotation
-            const speed = data.rpm * distance * config.gears.speedConversion;       // speed in km/h
-            // const speed = (states[7])
+            let speed = data.rpm * distance * config.gears.speedConversion;       // speed in km/h
+
+            if (config.daumCockpit.old_protocol) {
+              // Old daum devices do not use gear box simulation. Using rounded total km/h value
+              speed = (states[7])
+            } 
 
             if (!isNaN(speed) && (speed >= config.daumRanges.min_speed && speed <= config.daumRanges.max_speed)) {
               // reduce number of decimals after calculation to 1
@@ -463,8 +472,11 @@ class daumUSB {
       }
     } else {
       // this is just for get address
-      const datas = Buffer.from(command, 'hex');
-      this.write(datas, priority);
+      if (config.daumCockpit.old_protocol) {
+        // Old Daum Cockpits need additional 0 byte for address request
+        this.write(Buffer.from(command + '00', 'hex'), priority);
+      }
+        this.write(Buffer.from(command, 'hex'), priority);
     }
   };
 
