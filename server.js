@@ -30,6 +30,7 @@ global.globalspeed_daum = config.globals.speed_daum;
 global.globalrpm_daum = config.globals.rpm_daum;
 global.globalgear_daum = config.globals.gear_daum;
 global.globalpower_daum = config.globals.power_daum;
+global.globalhr_daum = config.globals.hr_daum;
 global.globalwindspeed_ble = config.globals.windspeed_ble;
 global.globalgrade_ble = config.globals.grade_ble;
 global.globalcrr_ble = config.globals.crr_ble;    // set once to have simulation available without BLE connected to apps
@@ -281,6 +282,7 @@ daumObs.on('data', data => {
   if ('rpm' in data) io.emit('rpm', data.rpm);
   if ('gear' in data) io.emit('gear', data.gear);
   if ('program' in data) io.emit('program', data.program);
+  if ('hr' in data) io.emit('hr', data.hr);
 
   daumBLE.notifyFTMS(data);
   daumAnt.notify(data);

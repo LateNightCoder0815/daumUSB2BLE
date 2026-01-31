@@ -3,6 +3,8 @@
 * updated and fixed to work with the current version of Zwift on modern linux
 * extended with broadcasting of ride metrics via ANT+
 * added support for devices before 2001 (e.g. Ergobike Cardio, 4008 series, etc.)
+* updated heart rate reading from Daum Ergobike
+* added BLE heart rate monitoring service (thanks to https://github.com/StephenDone/daumUSB2BLE/)
 
 ## prerequisites
 * RS232 to USB converter

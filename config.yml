@@ -1,5 +1,5 @@
 DEBUG:
-    level: 3  # DEBUG
+    level: 0  # Error
 
 mock:
     daumUSB: false
@@ -11,6 +11,7 @@ globals:
     rpm_daum: 0
     gear_daum: 1
     power_daum: 0
+    hr_daum: 0
     windspeed_ble: 0
     grade_ble: 0
     crr_ble: 0.0040
@@ -142,6 +143,8 @@ daumRanges:
       max_gear: 28
       min_shift: 1
       max_shift: 5
+      min_hr: 0
+      max_hr: 250
       manual_program: 0
       min_program: 0
       max_program: 79

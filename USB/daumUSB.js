@@ -184,7 +184,8 @@ class daumUSB {
       speed: global.globalspeed_daum,
       rpm: global.globalrpm_daum,
       gear: global.globalgear_daum,
-      power: global.globalpower_daum
+      power: global.globalpower_daum,
+      hr: global.globalhr_daum
     };
     let failure = false;
 
@@ -247,9 +248,7 @@ class daumUSB {
             // if (!isNaN(cadence) && (cadence >= config.daumRanges.min_rpm && cadence <= config.daumRanges.max_rpm)) {
             //   data.cadence = cadence
             // }
-            // const hr = 99 // !!! can be deleted - have to check BLE code on dependencies
-            // if (!isNaN(hr)) { data.hr = hr } // !!! can be deleted - have to check BLE code on dependencies
-            // TODO: check if we have to do a parseHexToInt here
+            
             const rpm = (states[6]);
             if (!isNaN(rpm) && (rpm >= config.daumRanges.min_rpm && rpm <= config.daumRanges.max_rpm)) {
               if (rpm - global.globalrpm_daum >= config.daumRanges.rpm_threshold) {
@@ -258,6 +257,18 @@ class daumUSB {
               } else {
                 data.rpm = rpm;
                 global.globalrpm_daum = data.rpm // global variables used, because I cannot code ;)
+              }
+            }
+
+            const hr = (states[14]);
+            logger.debug('hr: ' + hr);
+            if (!isNaN(hr) && (hr >= config.daumRanges.min_hr && hr <= config.daumRanges.max_hr)) {
+              if (failure) {
+                logger.debug('hr failure');
+                data.hr = global.globalhr_daum;
+              } else {
+                data.hr = hr;
+                global.globalhr_daum = data.hr
               }
             }
 
@@ -419,7 +430,7 @@ class daumUSB {
         logger.warn('[OUT]: Communication port is not open - not sending data: ' + element.command);
       }
     } else {
-      logger.debug('there is nothing in the queue.');
+      //logger.debug('there is nothing in the queue.');
       // TODO: get run data, because we have some time
       // this.runData();
     }

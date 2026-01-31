@@ -2,6 +2,7 @@ const bleno = require('@abandonware/bleno');
 const EventEmitter = require('events');
 const CyclingPowerService = require('./cycling-power-service');
 const FitnessMachineService = require('./ftms-service');
+const HeartRateServiceService = require('./heart-rate-service');
 
 class DaumBLE extends EventEmitter {
   constructor (serverCallback) {
@@ -12,6 +13,7 @@ class DaumBLE extends EventEmitter {
 
     this.csp = new CyclingPowerService();
     this.ftms = new FitnessMachineService(serverCallback);
+    this.hrs = new HeartRateServiceService();
 
     let self = this;
     console.log(`[daumBLE.js] - ${this.name} - BLE server starting`);
@@ -24,7 +26,7 @@ class DaumBLE extends EventEmitter {
       self.emit('stateChange', state);
 
       if (state === 'poweredOn') {
-        bleno.startAdvertising(self.name, [self.csp.uuid, self.ftms.uuid]);
+        bleno.startAdvertising(self.name, [self.csp.uuid, self.ftms.uuid, self.hrs.uuid]);
       } else {
         console.log('Stopping...');
         bleno.stopAdvertising();
@@ -37,7 +39,7 @@ class DaumBLE extends EventEmitter {
       // self.emit('error', error)
 
       if (!error) {
-        bleno.setServices([self.csp, self.ftms],
+        bleno.setServices([self.csp, self.ftms, self.hrs],
           (error) => {
             console.log(`[daumBLE.js] - ${this.name} - setServices: ${(error ? 'error ' + error : 'success')}`)
           });
@@ -87,6 +89,7 @@ class DaumBLE extends EventEmitter {
   notifyFTMS (event) {
     this.csp.notify(event);
     this.ftms.notify(event);
+    this.hrs.notify(event);
   }
 }
 
